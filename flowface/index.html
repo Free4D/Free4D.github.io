@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="Our FlowFace 3D face tracker can accurately track faces across challenging poses and expressions.">
+  <meta property="og:title" content="3D Face Tracking from 2D Video through Iterative Dense UV to Image Flow"/>
+  <meta property="og:description" content="Our FlowFace 3D face tracker can accurately track faces across challenging poses and expressions."/>
+  <meta property="og:url" content="https://felixtaubner.github.io/flowface/"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/images/flowface.webp"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="600"/>
+
+
+  <meta name="twitter:title" content="3D Face Tracking from 2D Video through Iterative Dense UV to Image Flow">
+  <meta name="twitter:description" content="Our FlowFace 3D face tracker can accurately track faces across challenging poses and expressions.">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/flowface.webp"> 
+  <!-- <meta name="twitter:card" content="summary_large_image"> -->
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="3D face tracking, face tracking, 3D face reconstruction, head reconstruction, avatar, paper">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>3D Face Tracking from 2D Video through Iterative Dense UV to Image Flow</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">3D Face Tracking from 2D Video through Iterative Dense UV to Image Flow</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://felixtaubner.github.io" target="_blank">Felix Taubner</a>,</span>
+                <span class="author-block">
+                  Prashant Raina,</span>
+                  <span class="author-block">
+                  <a href="https://mathieutuli.com/" target="_blank">Mathieu Tuli</a>,</span>
+                  <span class="author-block">
+                    <a href="https://www.euwern.com/" target="_blank">Eu Wern Teh</a>,</span>
+                    <span class="author-block">
+                    Chul Lee,</span>
+                    <span class="author-block">
+                    Jinmiao Huang</span>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block">LG Electronics<br>CVPR 2024</span>
+                     <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://openaccess.thecvf.com/content/CVPR2024/html/Taubner_3D_Face_Tracking_from_2D_Video_through_Iterative_Dense_UV_CVPR_2024_paper.html" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                    <!-- Supplementary PDF link
+                    <span class="link-block">
+                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Supplementary</span>
+                    </a>
+                  </span> -->
+
+                  <!-- Github link
+                  <span class="link-block">
+                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span> -->
+
+                <!-- ArXiv abstract Link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2404.09819" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+                <a href="https://github.com/felixtaubner/flowface/" target="_blank"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Code (Coming Soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video poster="other_videos/felix_banner_poster.webp" id="tree" autoplay muted playsinline loop height="80%">
+        <!-- Your video here other_videos/felix_banner_poster.webp -->
+        <source src="other_videos/felix_banner_c.mp4"
+        type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        Using a two stage pipeline consisting of dense 2D alignment (center) and 3D model fitting (right), our face tracking pipeline can accurately track faces across challenging poses and expressions.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            When working with 3D facial data, improving fidelity and avoiding the uncanny valley effect is critically dependent on accurate 3D facial performance capture. Because such methods are expensive and due to the widespread availability of 2D videos, recent methods have focused on how to perform monocular 3D face tracking. However, these methods often fall short in capturing precise facial movements due to limitations in their network architecture, training, and evaluation processes. Addressing these challenges, we propose a novel face tracker, FlowFace, that introduces an innovative 2D alignment network for dense per-vertex alignment. Unlike prior work, FlowFace is trained on high-quality 3D scan annotations rather than weak supervision or synthetic data. Our 3D model fitting module jointly fits a 3D face model from one or many observations, integrating existing neutral shape priors for enhanced identity and expression disentanglement and per-vertex deformations for detailed facial feature reconstruction. Additionally, we propose a novel metric and benchmark for assessing tracking accuracy. Our method exhibits superior performance on both custom and publicly available benchmarks. We further validate the effectiveness of our tracker by generating high-quality 3D data from 2D videos, which leads to performance gains on downstream tasks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop" style="text-align: center;">
+        <!-- Your image here -->
+        <h2 class="title is-3">Method</h2>
+        <img src="diagrams/pipeline_overview.png" alt="pipeline overview" width="60%"/>
+        <h2 class="subtitle has-text-centered is-max-desktop">
+          Our face tracker works in two stages: First, a dense, per-vertex 2D alignment is predicted from the input images. Then, a 3D reconstruction is obtained by optimizing a 3D head and camera model to fit the alignment.
+        </h2>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+<!-- End image carousel -->
+
+
+<!-- Youtube video -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <!-- Paper video. -->
+      <h2 class="title is-4">2D Alignment</h2>
+      <div class="container" style="text-align: center;">
+        <img src="diagrams/2d_alignment.png" alt="2d alignment module" width="80%"/>
+      </div>
+      <div class="content ">
+        Our 2D alignment model predicts the screen space position and confidence of all vertices of the <a href="https://flame.is.tue.mpg.de/" target="_blank">FLAME</a> head model. 
+        In an intermediate step, our network predicts a pixel-wise mapping between the UV space of the head mesh and the image space, which we call <b>UV-to-image flow</b>. 
+        First, deep features are predicted from an input image using the <a href="https://arxiv.org/abs/2105.15203" target="_blank">Segformer</a> backbone. 
+        In UV space, positional embeddings are generated for every pixel. These positional embeddings are static, meaning they are learned during training but are fixed for any input image during inference.
+        The UV embedding map and the image feature map are then fed into the <a href="https://arxiv.org/abs/2003.12039" target="_blank">RAFT</a> optical flow network. This network predicts the UV-to-image flow, and also its confidence. 
+        The UV-to-image flow maps every pixel in UV space to a position in image space. Using the corresponding UV coordinate of each vertex,
+        the image space position and confidence are sampled from this mapping for each vertex of the head mesh.
+        This network architecture allows the flow of low-level features into the prediction of the alignment for great positional accuracy and temporal consistency.
+        Furhtermore, we train this network on high quality 3D datasets for high 3D consistency.
+      </div>
+      <h2 class="title is-4">3D Model Fitting</h2>
+      <div class="container" style="text-align: center;">
+        <img src="diagrams/3d_model_fitting.png" alt="3d model fitting" width="50%"/>
+      </div>
+      <div class="content">
+        With the 2D alignment of each vertex (image space position and confidence), a 3D model can be fitted to the observations.
+        In the 3D model fitting stage, the 3D parameters of our head and camera models are optimized with respect to an energy function 
+        (similar to bundle adjustment). We use the <a href="https://flame.is.tue.mpg.de/" target="_blank">FLAME</a> 3D morphable model as our head model.
+        With its learned shape and expression space, it serves as the geometry prior for the underconstrained monocular 3D tacking problem.
+        We allow additional per-vertex deformations, which is possible due to the dense alignment data. The parameters that are optimized during 
+        the 3D model fitting stage are head pose, FLAME parameters, per-vertex deformations and camera intrinsics.
+        The objective energy function is based on the 2D reprojection error of the 3D vertices, weighted by their confidence. We further 
+        regularize the energy function with a neutral shape prediction from <a href="https://arxiv.org/abs/2204.06607" target="_blank">MICA</a>, the FLAME parameters and the accleration of each vertex.
+        This formulation is easily extendable to include multiple views, and due to the memory efficiency of the alignment data, many frames (>1000)
+        can be fitted simultaneously.
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End youtube video -->
+
+<!-- Video carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Gallery</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-video1">
+          <video poster="other_videos/video_1_poster.webp" id="video1" autoplay muted playsinline loop height="100%">
+            <!-- Your video file here -->
+            <source src="other_videos/video_1_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video2">
+          <video poster="" id="video2" autoplay muted playsinline loop height="100%">
+            <!-- Your video file here -->
+            <source src="other_videos/video_2_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="other_videos/video_3_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="other_videos/video_4_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="other_videos/video_5_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="other_videos/video_6_c.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <h2 class="subtitle has-text-centered is-max-desktop">
+        Our head tracker applied to videos from the <a href="https://celebv-hq.github.io/" target="_blank">CelebV-HQ</a> dataset. Despite being trained only on images captured in controlled lab environments, our model generalizes well to videos captured in-the-wild.
+      </h2>
+      <h2 class="subtitle has-text-centered is-max-desktop">
+      </h2>
+
+    </div>
+  </div>
+</section>
+<!-- End video carousel -->
+
+
+<!-- Video carousel -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Qualitative Comparison</h2>
+      <h2 class="title is-4">Videos</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-video1">
+          <video poster="" id="video1" autoplay muted playsinline loop height="100%">
+            <!-- Your video file here -->
+            <source src="videos/alex_E028_Scream_Eyebrows_Up_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video2">
+          <video poster="" id="video2" autoplay muted playsinline loop height="100%">
+            <!-- Your video file here -->
+            <source src="videos/charlie_E057_Cheeks_Puffed_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/alex_E029_Show_All_Teeth_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/alex_SEN_did_Shawn_catch_that_big_goose_without_help_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/charlie_E029_Show_All_Teeth_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/charlie_SEN_why_buy_oil_when_you_always_use_mine_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/ekaterina_E057_Cheeks_Puffed_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/ekaterina_SEN_are_you_looking_for_employment_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/ekaterina_E029_Show_All_Teeth_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/julia_SEN_they_are_both_trend_following_methods_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted playsinline loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/julia_E029_Show_All_Teeth_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-video3">
+          <video poster="" id="video3" autoplay muted loop height="100%">\
+            <!-- Your video file here -->
+            <source src="videos/julia_E028_Scream_Eyebrows_Up_final.mp4"
+            type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <h2 class="subtitle has-text-centered is-max-desktop">
+        Qualitative results on our benchmark based on the Multiface dataset. Our model produces more accurate 3D reconstructions that are better aligned with the input video, compared to the photometric head tracker <a href="https://arxiv.org/abs/2204.06607" target="_blank">MPT</a>, <a href="https://arxiv.org/abs/2012.04012" target="_blank">DECA</a>, <a href="https://arxiv.org/abs/2302.14434" target="_blank">HRN</a> and <a href="https://github.com/cleardusk/3DDFA_V2" target="_blank">3DDFA-v2</a>.
+      </h2>
+      <h2 class="subtitle has-text-centered is-max-desktop">
+      </h2>
+
+      <!-- <div id="results-carousel2" class="carousel results-carousel">
+        <div class="item">
+          <img src="images/ffhq_1.png" alt="results on ffhq dataset"/>
+          <h2 class="subtitle has-text-centered">
+            First image description.
+          </h2>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</section>
+<!-- End video carousel -->
+
+
+
+<!-- Image carousel -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container  is-max-desktop">
+      <h2 class="title is-4">Images</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item">
+        <!-- Your image here -->
+          <img src="images/ffhq_1.webp" alt="results on ffhq dataset"/>
+        </div>
+        <div class="item">
+        <!-- Your image here -->
+          <img src="images/ffhq_2.webp" alt="results on ffhq dataset"/>
+        </div>
+      </div>
+      <h2 class="subtitle has-text-centered is-max-desktop">
+        Single image reconstruction on images from the <a href="https://arxiv.org/abs/1812.04948" target="_blank">FFHQ</a> dataset. Our method demonstrates a better overall alignment and reconstruction. 
+        
+        (a) input image, (b) our 2D alignment, (c, d) our 3D reconstruction, (e) <a href="https://arxiv.org/abs/2302.14434" target="_blank">HRN</a> (f) <a href="https://arxiv.org/abs/2012.04012" target="_blank">DECA</a> (g) <a href="https://arxiv.org/abs/1803.07835" target="_blank">PRNet</a> (h)<a href="https://github.com/cleardusk/3DDFA_V2" target="_blank">3DDFA-v2</a>
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End image carousel -->
+
+
+
+
+<!-- Paper poster 
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Poster</h2>
+
+      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
+          </iframe>
+        
+      </div>
+    </div>
+  </section>
+End paper poster -->
+
+
+<!-- Youtube video -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <!-- Paper video. -->
+      <h2 class="title is-3">Video Presentation</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          
+          <div class="publication-video">
+            <!-- Youtube embed code here -->
+            <iframe src="https://www.youtube.com/embed/jS3DzQzXW0k?si=JIQ7thLLWtIULzV-" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End youtube video -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>
+@InProceedings{taubner2024flowface,
+  author    = {Taubner, Felix and Raina, Prashant and Tuli, Mathieu and Teh, Eu Wern and Lee, Chul and Huang, Jinmiao},
+  title     = {{3D} Face Tracking from {2D} Video through Iterative Dense {UV} to Image Flow},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  month     = {June},
+  year      = {2024},
+  pages     = {1227-1237}
+}</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+             <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript">
+var sc_project=13070216; 
+var sc_invisible=1; 
+var sc_security="81d521a3"; 
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - Statcounter" href="https://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="https://c.statcounter.com/13070216/0/81d521a3/1/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+</body>
+</html>
