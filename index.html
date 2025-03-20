@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>CAT4D: Create Anything in 4D with Multi-View Video Diffusion Models</title>
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="https://cat-4d.github.io/img/rep_img.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1711">
+    <meta property="og:image:height" content="576">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cat-4d.github.io/" />
+    <meta property="og:title" content="CAT4D: Create Anything in 4D with Multi-View Video Diffusion Models" />
+    <meta property="og:description"
+        content="We present CAT4D, a method for creating 4D (dynamic 3D) scenes from monocular video. CAT4D leverages a multi-view video diffusion model trained on a diverse combination of datasets to enable novel view synthesis at any specified camera poses and timestamps. Combined with a novel sampling approach, this model can transform a single monocular video into a multi-view video, enabling robust 4D reconstruction via optimization of a deformable 3D Gaussian representation.  We demonstrate competitive performance on novel view synthesis and dynamic scene reconstruction benchmarks, and highlight the creative capabilities for 4D scene generation from real or generated videos." />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CAT4D: Create Anything in 4D with Multi-View Video Diffusion Models" />
+    <meta name="twitter:description"
+        content="We present CAT4D, a method for creating 4D (dynamic 3D) scenes from monocular video. CAT4D leverages a multi-view video diffusion model trained on a diverse combination of datasets to enable novel view synthesis at any specified camera poses and timestamps. Combined with a novel sampling approach, this model can transform a single monocular video into a multi-view video, enabling robust 4D reconstruction via optimization of a deformable 3D Gaussian representation.  We demonstrate competitive performance on novel view synthesis and dynamic scene reconstruction benchmarks, and highlight the creative capabilities for 4D scene generation from real or generated videos." />
+    <meta name="twitter:image" content="https://cat-4d.github.io/img/rep_img.jpg" />
+
+    <meta http-equiv="origin-trial"
+        content="AgTx0EwEo9k7FU+uQs2+KfM3RqolxyWv7ZRcs1cz0siAnvPde/MVEcQS61F6sCemUSj464Fi+nuEzUA/UeuJ6A0AAABheyJvcmlnaW4iOiJodHRwczovL2NhdC00ZC5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6IldlYkdQVVN1Ymdyb3Vwc0ZlYXR1cmVzIiwiZXhwaXJ5IjoxNzQ0NzYxNTk5fQ==" />
+    <link rel="icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8ZERS5BVPS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-8ZERS5BVPS');
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+        </script>
+    <script defer src="js/fontawesome.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/synced_video_selector.js"></script>
+
+    <script type="module">
+        import init, * as bindings from '/brush-demo/brush-desktop-cfe413afb3e2c900.js';
+        const isWebGPUSupported = 'gpu' in navigator;
+        const warningElement = document.getElementById('webgpu-warning');
+        const canvasElement = document.getElementById('brush_canvas');
+
+        const originalFocus = HTMLElement.prototype.focus;
+        HTMLElement.prototype.focus = function () {
+            if (!this.matches('[id="brush_canvas"]')) {
+                originalFocus.apply(this, arguments);
+            }
+        };
+
+        if (isWebGPUSupported) {
+            const wasm = await init({ module_or_path: '/brush-demo/brush-desktop-cfe413afb3e2c900_bg.wasm' });
+
+            window.wasmBindings = bindings;
+            dispatchEvent(new CustomEvent("TrunkApplicationStarted", { detail: { wasm } }));
+        } else {
+            warningElement.style.display = 'block';
+            canvasElement.style.display = 'none';
+        }
+    </script>
+
+    <script type="module">
+        import { setupCarousel } from "./js/splats.js"
+
+        window.addEventListener("TrunkApplicationStarted", (e) => {
+            // Load with an initial URL.
+            var start_url = "https://storage.googleapis.com/free4d/genmo-coffee-machine_deform3dgs_pruned.ply"
+            const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=1.0&min_radius=1.5&max_radius=4.5&radius=3.75&min_pitch=-20.0&max_pitch=20.0&min_yaw=-25.0&max_yaw=25.0`)
+            // setupCarousel(viewer, document.querySelector("#splat-carousel"));
+            window.viewer = viewer;
+        });
+    </script>
+
+    <style>
+        html {
+            /* Remove touch delay: */
+            touch-action: manipulation;
+        }
+
+        .final-element {
+            white-space: nowrap;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #664d03;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 1rem auto;
+            max-width: 600px;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .warning-title {
+            align-items: center;
+            display: flex;
+            font-size: 1.1rem;
+            font-weight: 600;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-title svg {
+            height: 24px;
+            width: 24px;
+        }
+
+        .warning-message {
+            line-height: 1.5;
+            margin: 0;
+        }
+    </style>
+</head>
+
+
+<body style="padding: 5%; padding-top: min(15px, 5%); padding-bottom: min(5px, 5%); width: 100%">
+    <div class="container-lg text-center" style="max-width: 1500px; margin: auto;" id="main">
+        <header role="banner">
+            <!-- <div class="container" id="main"> -->
+            <div class="row">
+                <h2 class="col-md-12 text-center">
+                    <b>CAT4D:</b> Create Anything in 4D with Multi-View Video Diffusion Models</br>
+                </h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-3">
+                </div>
+                <div class="container-fluid text-center">
+                    <ul class="list-inline" style="white-space: nowrap; margin:0px 0px 0px 0px;">
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://www.cs.columbia.edu/~rundi/">Rundi
+                                Wu¹𝄒²</a></li>
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://ruiqigao.github.io/">Ruiqi Gao¹</a>
+                        </li>
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://poolio.github.io/">Ben Poole¹</a>
+                        </li>
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://alextrevithick.github.io/">Alex
+                                Trevithick¹𝄒³</a></li><br>
+                        <li><a style="font-size: calc(min(3vw, 15px))"
+                                href="https://www.cs.columbia.edu/~cxz/index.htm/">Changxi Zheng²</a></li>
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://jonbarron.info/">Jonathan T.
+                                Barron¹</a></li>
+                        <li><a style="font-size: calc(min(3vw, 15px))" href="https://holynski.org/">Aleksander
+                                Holynski¹</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-12 text-center" style="font-size: calc(min(3vw, 15px))">
+                    ¹Google DeepMind&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;²Columbia
+                    University&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;³UC San Diego
+                </div>
+                <!-- <div class="col-md-12 text-center" style="font-size: calc(min(3vw, 15px))">
+                <b>NeurIPS 2024 (Oral)</b>
+            </div> -->
+            </div>
+            <div class="row text-center">
+                <span class="link-block" style="padding-top: 10px; padding-bottom: 10px">
+                    <a href="https://arxiv.org/abs/2411.18613" class="external-link button is-normal is-rounded is-dark"
+                        style="width: 80px; font-size: 15px">
+                        <span class="icon">
+                            <i class="ai ai-arxiv"></i>
+                        </span>
+                        <span>arXiv</span>
+                    </a>
+                    <!-- <a href="gallery.html" class="external-link button is-normal is-rounded is-dark"
+                        style="width: 120px; font-size: 15px">
+                        <span>Gallery</span>
+                    </a> -->
+                </span>
+            </div>
+        </header>
+
+        <main role="main">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <video id="co3d-grid" poster="img/teaser_frame.jpg" width="100%" autoplay loop muted controls
+                        playsinline>
+                        <source src="videos/teaser_crf28.mp4" type="video/mp4">
+                        </source>
+                        <!-- <source src="videos/teaser_top_inside.m4v" type="video/mp4"></source> -->
+                    </video>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 offset-md-2 rounded"
+                    style="text-align: center; padding-bottom: 0px; padding-top: 5px; background-color: #d0d5ec;">
+                    <h6 style="text-align: center; color:rgb(0, 0, 0)"><strong>TL;DR</strong>: CAT4D creates 4D scenes
+                        from real or generated videos.</h6>
+                </div>
+            </div><br><br>
+
+            <div class="row">
+                <div class="">
+                    <h3 class="col-md-8 offset-md-2"> How it works </h3>
+                    <p class="col-md-8 offset-md-2" style="text-align: left;">
+                        Given an input monocular video, we generate multi-view videos at novel viewpoints using our
+                        multi-view video diffusion model.
+                        These generated videos are then used to reconstruct the dynamic 3D scene as deforming 3D
+                        Gaussians.
+                    </p>
+                    <video muted loop autoplay src="videos/howitworks_cat4d.mp4" style="max-width:960px" width=100%>
+                        An animated diagram briefly describing the method. On the left, an input image is shown. Next
+                        are samples from the
+                        diffusion model (5 secs), with a spinning camera path. Finally, it shows the optimized 3D Model
+                        obtained by
+                        optimizing a NeRF (55 seconds).
+                    </video>
+                </div>
+            </div><br><br>
+
+            <div id="viewer">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 rounded card" style="background-color: #d0d5ec;">
+                        <h3 style="text-align: center;">Interactive Viewer</h3>
+
+                        <p class="text-center" style="text-align: center;">
+                            Click on the images below to render 4D scenes in real-time in your browser, powered by <a
+                                href="https://github.com/ArthurBrussee/brush">Brush</a>! <br>Note that this is
+                            experimental and quality may be reduced.
+                        </p>
+
+                        <div id="webgpu-warning" style="display: none" class="warning">
+                            <div class="warning-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 8v5"></path>
+                                    <circle cx="12" cy="16" r="0.5" fill="currentColor"></circle>
+                                </svg>
+                                Browser Not Supported
+                            </div>
+                            <p class="warning-message">
+                                Your browser does not appear to support the interactive viewer. Currently, only Chrome
+                                130+ is supported.
+                            </p>
+                        </div>
+
+
+                        <canvas id="brush_canvas"
+                            style="width: 100%; max-width:450px; aspect-ratio: 1/1; text-align:center; display: block; position: relative; margin-left: auto; margin-right: auto;"></canvas>
+
+                        <div class="pill-row scene-pills" id="viewer-pills" role="group" aria-relevant="additions text">
+
+                            <div class="pill scene-pill-large" data-value="genmo-coffee-machine">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/genmo-coffee-machine_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/genmo-coffee-machine.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="genmo-dog-holding-teddybear">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/genmo-dog-holding-teddybear_deform3dgs_pruned.ply")'>
+                                    <img class="card-img"
+                                        src="videos/viewer_thumbnails/genmo-dog-holding-teddybear.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="genmo-mice-on-pizza">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/genmo-mice-on-pizza_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/genmo-mice-on-pizza.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="genmo-two-babies-dancing">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/genmo-two-babies-dancing_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/genmo-two-babies-dancing.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="hailuo-bee">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/hailuo-bee_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/hailuo-bee.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="hailuo-rabbit-snow">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/hailuo-rabbit-snow_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/hailuo-rabbit-snow.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-0689-girl">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-0689-girl_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-0689-girl.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-6210-cat">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-6210-cat_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-6210-cat.png">
+                                </a>
+                            </div>
+
+
+
+                            <div class="pill scene-pill-large" data-value="kling-baby-dragon-in-bowl">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-baby-dragon-in-bowl_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-baby-dragon-in-bowl.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-baby-panda-in-hand">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-baby-panda-in-hand_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-baby-panda-in-hand.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-bee-on-rice-flower">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-bee-on-rice-flower_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-bee-on-rice-flower.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-bird-in-snow-cartoon">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-bird-in-snow-cartoon_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-bird-in-snow-cartoon.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-bulldog-swing">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-bulldog-swing_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-bulldog-swing.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-cat-kneading2">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-cat-kneading2_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-cat-kneading2.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-cat-potato-in-water">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-cat-potato-in-water_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-cat-potato-in-water.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-cat-swing-in-snow">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-cat-swing-in-snow_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-cat-swing-in-snow.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-chemical-lab-fire">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-chemical-lab-fire_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-chemical-lab-fire.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-coffee">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-coffee_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-coffee.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-ecEDleSS-pig">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-ecEDleSS-pig_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-ecEDleSS-pig.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-forest-elf-fire">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-forest-elf-fire_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-forest-elf-fire.png">
+                                </a>
+                            </div>
+
+                            <div class="pill scene-pill-large" data-value="kling-kungfu-cat">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-kungfu-cat_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-kungfu-cat.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-mood-fast-play">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-mood-fast-play_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-mood-fast-play.png">
+                                </a>
+                            </div>
+
+                            <div class="pill scene-pill-large" data-value="kling-panda-playing-guitar">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-panda-playing-guitar_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-panda-playing-guitar.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="kling-turtle-violin">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-turtle-violin_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/kling-turtle-violin.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="pexels-dog5">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/pexels-dog5_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/pexels-dog5.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="pexels-lucky-cat">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/pexels-lucky-cat_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/pexels-lucky-cat.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="pexels-penguin">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/pexels-penguin_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/pexels-penguin.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="pika-deflate-sumo">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/pika-deflate-sumo_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/pika-deflate-sumo.png">
+                                </a>
+                            </div>
+
+
+                            <div class="pill scene-pill-large" data-value="sora-mammoths">
+                                <a
+                                    onclick='window.viewer.load_url("https://storage.googleapis.com/realtime-nerf-360/cat4d/sora-mammoths_deform3dgs_pruned.ply")'>
+                                    <img class="card-img" src="videos/viewer_thumbnails/sora-mammoths.png">
+                                </a>
+                            </div>
+
+
+                            <!-- 
+                            <div class="splat-carousel position-relative" id="splat-carousel" role="group"
+                                aria-relevant="additions text">
+                                <div class="splat-carousel-items">
+                                    <div id="splat-carousel-prototype">
+                                        <div class="splat-carousel-item">
+                                            <img class="card-img"
+                                                style="user-drag: none;pointer-events: none; user-select:none;" src="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="splat-carousel-buttons">
+                                    <button class="splat-carousel-button left">&#8249;</button>
+                                    <button class="splat-carousel-button right">&#8250;</button>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+
+                <div id="cameratime-ours">
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <h3> Separate camera and time control</h3>
+                            <p class="text-justify" style="text-align: left;">
+                                At the core of CAT4D is a multi-view video diffusion model that disentangles the
+                                controls of
+                                camera and scene motions.
+                                We demonstrate this by generating three types of output sequences given 3 input
+                                images (with camera poses): 1) fixed viewpoint and varying time, 2) varying viewpoint
+                                and
+                                fixed time, and 3) varying viewpoint and varying time.
+                            </p>
+
+                            <table style="margin-left: auto; margin-right: auto; width: 100%;">
+                                <tr>
+                                    <th style="text-align: center;width: 10%;">Input</th>
+                                    <th style="text-align: center;width: 30%;">Fixed View<br>Varying Time</th>
+                                    <th style="text-align: center;width: 30%;">Varying View<br>Fixed Time</th>
+                                    <th style="text-align: center;width: 30%;">Varying View<br>Varying Time</th>
+                                </tr>
+                                <tr>
+                                    <td rowspan="1" colspan="4" style="width: 100%">
+                                        <video id="cameratime_ours_video" class="video" width=100% loop playsinline
+                                            autoplay muted controls>
+                                            <source src="videos/cameartime_ours/wt0177.mp4" />
+                                        </video>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                        </div>
+
+                        <div class="pill-row scene-pills" id="cameratime-pills" role="group"
+                            aria-relevant="additions text">
+                            <div class="pill scene-pill" data-value="wt0000">
+                                <img class="card-img" src="videos/cameartime_ours/wt0000.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0409">
+                                <img class="card-img" src="videos/cameartime_ours/wt0409.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0177">
+                                <img class="card-img" src="videos/cameartime_ours/wt0177.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="backpack">
+                                <img class="card-img" src="videos/cameartime_ours/backpack.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="block">
+                                <img class="card-img" src="videos/cameartime_ours/block.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="haru-sit">
+                                <img class="card-img" src="videos/cameartime_ours/haru-sit.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0013">
+                                <img class="card-img" src="videos/cameartime_ours/wt0013.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="pillow">
+                                <img class="card-img" src="videos/cameartime_ours/pillow.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="space-out">
+                                <img class="card-img" src="videos/cameartime_ours/space-out.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0120">
+                                <img class="card-img" src="videos/cameartime_ours/wt0120.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="umbrella">
+                                <img class="card-img" src="videos/cameartime_ours/umbrella.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+
+                <script>
+                    compareDiv = document.querySelector("#cameratime-ours")
+                    activeScene_cameratime = "wt0000"
+
+                    const methodPills_cameratime = compareDiv.querySelectorAll('.method-pill');
+                    const scenePills_cameratime = compareDiv.querySelectorAll(".scene-pill")
+                    const showVideo_cameratime = compareDiv.querySelector('#cameratime_ours_video')
+
+                    for (scenePill of scenePills_cameratime) {
+                        scenePill.addEventListener('click', function () {
+                            activeScene_cameratime = this.getAttribute('data-value');
+                            updateDisplayCameraTime();
+                        });
+                    }
+
+                    function updateDisplayCameraTime() {
+                        for (scenePill of scenePills_cameratime) {
+                            if (scenePill.getAttribute('data-value') == activeScene_cameratime) {
+                                scenePill.classList.add('active');
+                            } else {
+                                scenePill.classList.remove('active')
+                            }
+                        }
+                        showVideo_cameratime.src = `videos/cameartime_ours/${activeScene_cameratime}.mp4`
+                        showVideo_cameratime.playbackRate = 2.0;
+                    }
+                    // Update initial display
+                    updateDisplayCameraTime()
+
+                </script>
+
+                <div id="comparison">
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <h3> Comparisons </h3>
+                            <p class="text-justify" style="text-align: left;">
+                                Compare our method to baselines on different tasks. Try selecting different tasks and
+                                scenes!
+                            </p>
+                            <ul class="nav nav-pills justify-content-center" role="navigation">
+                                <li class="nav-item">
+                                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"
+                                        style="width: 60px;"><strong>Task:</strong></a>
+                                </li>
+                                <li class="nav-item method-pill" data-value="cameratime"><a class="nav-link">Separate
+                                        control over<br>camera and time<span style="font-size: 10px;"></span></a></li>
+                                <li class="nav-item method-pill" data-value="bullettime3d"><a
+                                        class="nav-link">Sparse-view
+                                        Bullet-time<br>3D reconstruction<span style="font-size: 10px;"></span></a></li>
+                                <li class="nav-item method-pill" data-value="dycheck"><a class="nav-link active">4D
+                                        reconstruction<br>from monocular video<span style="font-size: 10px;"></span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div id="cameratime-compare" class="row method-block" style="display: none;">
+                        <div class="col-md-8 offset-md-2">
+                            <p class="text-justify" style="text-align: left;">
+                                Given 3 input images, we generate three types of output sequences: 1) fixed viewpoint
+                                and
+                                varying time, 2) varying viewpoint and fixed time, and 3) varying viewpoint and varying
+                                time.
+                            </p>
+
+
+                            <table style="margin-left: auto; margin-right: auto; width: 75%;">
+                                <tr>
+                                    <th style="text-align: center;width: 10%;">Input</th>
+                                    <th style="text-align: center;width: 30%;">4DiM</th>
+                                    <th style="text-align: center;width: 30%;">Ours</th>
+                                    <th id="cameratime-video-th" style="text-align: center;width: 30%;">GT</th>
+                                </tr>
+                                <tr>
+                                    <td id="cameratime-video-td" rowspan="1" colspan="4" style="width: 100%">
+                                        <video id="cameratime-video" class="video" width=100% loop playsinline autoplay
+                                            muted controls>
+                                            <source src="videos/cameratime/umbrella_gt/fixcam_movetime.mp4" />
+                                        </video>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="row m-2">
+                                <div class="col-md-11">
+                                    <ul class="nav nav-pills justify-content-center" role="navigation">
+                                        <li class="nav-item">
+                                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"
+                                                style="width: 110px"><strong>Output types:</strong></a>
+                                        </li>
+                                        <li class="nav-item mode-pill" data-value="fixcam_movetime"><a
+                                                class="nav-link active">Fixed View<br>Varying Time<span
+                                                    style="font-size: 10px;"></span></a></li>
+                                        <li class="nav-item mode-pill" data-value="movecam_fixtime"><a
+                                                class="nav-link">Varying View<br>Fixed Time<span
+                                                    style="font-size: 10px;"></span></a></li>
+                                        <li class="nav-item mode-pill" data-value="movecam_movetime"><a
+                                                class="nav-link">Varying View<br>Varying Time<span
+                                                    style="font-size: 10px;"></span></a> </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="pill-row scene-pills" id="cameratime-pills" role="group"
+                                aria-relevant="additions text">
+                                <div class="pill scene-pill" data-value="haru-sit">
+                                    <img class="card-img" src="videos/cameratime/haru-sit/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="pillow">
+                                    <img class="card-img" src="videos/cameratime/pillow/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="space-out">
+                                    <img class="card-img" src="videos/cameratime/space-out/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="wt0013">
+                                    <img class="card-img" src="videos/cameratime/wt0013/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="wt0120">
+                                    <img class="card-img" src="videos/cameratime/wt0120/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="wt0177">
+                                    <img class="card-img" src="videos/cameratime/wt0177/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="wt0409">
+                                    <img class="card-img" src="videos/cameratime/wt0409/thumbnail.png">
+                                </div>
+                                <br>
+                                <div class="pill scene-pill" data-value="balloon1_gt">
+                                    <img class="card-img" src="videos/cameratime/balloon1_gt/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="balloon2_gt">
+                                    <img class="card-img" src="videos/cameratime/balloon2_gt/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="playground_gt">
+                                    <img class="card-img" src="videos/cameratime/playground_gt/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="skating_gt">
+                                    <img class="card-img" src="videos/cameratime/skating_gt/thumbnail.png">
+                                </div>
+                                <div class="pill scene-pill" data-value="umbrella_gt">
+                                    <img class="card-img" src="videos/cameratime/umbrella_gt/thumbnail.png">
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+
+                    </div>
+
+                    <div id="bullettime3d-compare" class="row method-block" style="display: none;">
+                        <div class="col-md-8 offset-md-2">
+                            <!-- <h3> Comparison </h3> -->
+                            <p class="text-justify" style="text-align: left;">
+                                Given only a few posed images of a dynamic scene, we can create a ''bullet-time'' effect
+                                by
+                                reconstructing a static 3D scene corresponding to the time of one input view.
+                                The three input images are shown on the left, where the first one is the target
+                                bullet-time
+                                frame.
+                            </p>
+                            <table style="margin-left: auto; margin-right: auto; width: 90%;">
+                                <tr>
+                                    <th style="text-align: center;width: 8%;">Input</th>
+                                    <th style="text-align: center;width: 23%;">CAT3D-1cond</th>
+                                    <th style="text-align: center;width: 23%;">CAT3D-3cond</th>
+                                    <th style="text-align: center;width: 23%;">Ours</th>
+                                    <th id="bullettime3d-gt-th" style="text-align: center;width: 23%;">GT</th>
+                                </tr>
+                                <tr>
+                                    <td id="bullettime3d-td" rowspan="1" colspan="4" style="width: 100%">
+                                        <video id="bullettime3d-video" class="video" width=100% loop playsinline
+                                            autoplay muted controls>
+                                            <source src="videos/bullettime3d/Jumping.mp4" />
+                                        </video>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                        </div>
+
+                        <div class="pill-row scene-pills" id="bullettime3d-pills" role="group"
+                            aria-relevant="additions text">
+                            <div class="pill scene-pill" data-value="apple1">
+                                <img class="card-img" src="videos/bullettime3d/apple1.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="backpack1">
+                                <img class="card-img" src="videos/bullettime3d/backpack1.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="mochi0">
+                                <img class="card-img" src="videos/bullettime3d/mochi0.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="sriracha0">
+                                <img class="card-img" src="videos/bullettime3d/sriracha0.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0000">
+                                <img class="card-img" src="videos/bullettime3d/wt0000.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0003">
+                                <img class="card-img" src="videos/bullettime3d/wt0003.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="wt0004">
+                                <img class="card-img" src="videos/bullettime3d/wt0004.png">
+                            </div>
+                            <br>
+                            <div class="pill scene-pill" data-value="balloon1_gt">
+                                <img class="card-img" src="videos/bullettime3d/balloon1.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="jumping">
+                                <img class="card-img" src="videos/bullettime3d/jumping.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="playground_gt">
+                                <img class="card-img" src="videos/bullettime3d/playground.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="skating">
+                                <img class="card-img" src="videos/bullettime3d/skating.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="umbrella_gt">
+                                <img class="card-img" src="videos/bullettime3d/umbrella.png">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div id="dycheck-compare" class="row method-block" style="display: block;">
+                        <div class="col-md-8 offset-md-2">
+                            <p class="text-justify" style="text-align: left;">
+                                Comparison of dynamic scene reconstruction from monocular videos on the DyCheck dataset.
+                            </p>
+                            <table style="margin-left: auto; margin-right: auto; width: 100%;">
+                                <tr>
+                                    <th style="text-align: center;width: 16%;">4D-GS</th>
+                                    <th style="text-align: center;width: 16%;">Shape-of-Motion</th>
+                                    <th style="text-align: center;width: 16%;">MoSca</th>
+                                    <th style="text-align: center;width: 16%;">Ours</th>
+                                    <th style="text-align: center;width: 16%;">Ground Truth</th>
+                                    <th style="text-align: center;width: 16%;">Input</th>
+                                </tr>
+                                <tr>
+                                    <td rowspan="1" colspan="6" style="width: 100%">
+                                        <video id="dycheck-video" class="video" width=100% loop playsinline autoplay
+                                            muted controls>
+                                            <source src="videos/dycheck/teddy.mp4" />
+                                        </video>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                        </div>
+
+                        <div class="pill-row scene-pills" id="dycheck-pills" role="group"
+                            aria-relevant="additions text">
+                            <div class="pill scene-pill" data-value="apple">
+                                <img class="card-img" src="videos/dycheck/apple.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="block">
+                                <img class="card-img" src="videos/dycheck/block.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="paper-windmill">
+                                <img class="card-img" src="videos/dycheck/paper-windmill.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="spin">
+                                <img class="card-img" src="videos/dycheck/spin.png">
+                            </div>
+                            <div class="pill scene-pill" data-value="teddy">
+                                <img class="card-img" src="videos/dycheck/teddy.png">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br><br>
+
+                <script>
+                    compareDiv = document.querySelector("#comparison")
+                    const methodPills = compareDiv.querySelectorAll('.method-pill');
+
+                    activeMethod = "dycheck"
+                    activeCameratimeMode = "fixcam_movetime"
+                    // activeScene = "jumping"
+                    activeScenePerMethod = {
+                        "cameratime": "umbrella_gt",
+                        "bullettime3d": "jumping",
+                        "dycheck": "teddy"
+                    }
+
+                    for (methodPill of methodPills) {
+                        const method = methodPill.getAttribute('data-value');
+                        console.log(method)
+                        methodDiv = compareDiv.querySelector(`#${method}-compare`);
+                        console.log(methodDiv)
+
+                        const scenePillContainer = methodDiv.querySelector(`#${method}-pills`);
+                        const scenePills = scenePillContainer.querySelectorAll('.scene-pill');
+                        const showVideo = methodDiv.querySelector(`#${method}-video`);
+
+                        for (scenePill of scenePills) {
+                            scenePill.addEventListener('click', function () {
+                                // activeScene = this.getAttribute('data-value');
+                                // activeScene = this.getAttribute('data-value');
+                                activeScenePerMethod[method] = this.getAttribute('data-value');
+                                updateDisplayCompare();
+                            });
+                        }
+
+                        methodPill.addEventListener('click', function () {
+                            activeMethod = this.getAttribute('data-value');
+                            updateDisplayCompare();
+                        });
+                    }
+
+                    const cameratime_modePills = compareDiv.querySelectorAll('.mode-pill');
+                    for (modePill of cameratime_modePills) {
+                        modePill.addEventListener('click', function () {
+                            activeCameratimeMode = this.getAttribute('data-value');
+                            updateDisplayCompare();
+                        });
+                    }
+
+                    function updateDisplayCompare() {
+                        for (methodPill of methodPills) {
+                            if (methodPill.getAttribute('data-value') == activeMethod) {
+                                methodPill.querySelector('a').classList.add('active');
+                            } else {
+                                methodPill.querySelector('a').classList.remove('active')
+                            }
+                        }
+                        method_blocks = compareDiv.querySelectorAll('.method-block');
+                        for (method_block of method_blocks) {
+                            console.log(method_block.id)
+                            if (method_block.id == `${activeMethod}-compare`) {
+                                method_block.style.display = "block";
+                                methodDiv = compareDiv.querySelector(`#${activeMethod}-compare`);
+
+                                const scenePillContainer = methodDiv.querySelector(`#${activeMethod}-pills`);
+                                const scenePills = scenePillContainer.querySelectorAll('.scene-pill');
+                                const showVideo = methodDiv.querySelector(`#${activeMethod}-video`);
+
+                                activeScene = activeScenePerMethod[activeMethod]
+
+                                for (scenePill of scenePills) {
+                                    if (scenePill.getAttribute('data-value') == activeScene) {
+                                        scenePill.classList.add('active');
+                                    } else {
+                                        scenePill.classList.remove('active')
+                                    }
+                                }
+                                if (activeMethod == "cameratime") {
+                                    showVideo.src = `videos/cameratime/${activeScene}/${activeCameratimeMode}.mp4`
+                                    const tdElement = document.getElementById("cameratime-video-td");
+                                    if (activeScene.endsWith("gt")) {
+                                        tdElement.colSpan = 4;
+                                    } else {
+                                        tdElement.colSpan = 3;
+                                    }
+                                    const thElement = document.getElementById("cameratime-video-th");
+                                    if (activeScene.endsWith("gt")) {
+                                        thElement.style.display = "table-cell";
+                                    } else {
+                                        thElement.style.display = "none";
+                                    }
+                                    for (modePill of cameratime_modePills) {
+                                        if (modePill.getAttribute('data-value') == activeCameratimeMode) {
+                                            modePill.querySelector('a').classList.add('active');
+                                        } else {
+                                            modePill.querySelector('a').classList.remove('active')
+                                        }
+                                    }
+
+                                } else if (activeMethod == "bullettime3d") {
+                                    showVideo.src = `videos/bullettime3d/${activeScene}.mp4`
+                                    const tdElement = document.getElementById("bullettime3d-td");
+                                    if (activeScene.endsWith("gt")) {
+                                        tdElement.colSpan = 5;
+                                    } else {
+                                        tdElement.colSpan = 4;
+                                    }
+                                    const thElement = document.getElementById("bullettime3d-gt-th");
+                                    if (activeScene.endsWith("gt")) {
+                                        thElement.style.display = "table-cell";
+                                    } else {
+                                        thElement.style.display = "none";
+                                    }
+
+                                } else if (activeMethod == "dycheck") {
+                                    showVideo.src = `videos/dycheck/${activeScene}.mp4`
+                                }
+
+                            } else {
+                                method_block.style.display = "none";
+                            }
+                        }
+
+                    }
+                    // Update initial display
+                    updateDisplayCompare()
+
+                </script>
+
+
+                <div class="col-md-8 offset-md-2 text-start">
+                    <h4>
+                        Acknowledgements
+                    </h4>
+
+                    <p class="text-justify" style="text-align: left;">
+                        We would like to thank Arthur Brussee, Philipp Henzler, Daniel Watson, Jiahui Lei, Hang Gao,
+                        Qianqian Wang, Songyou Peng, Stan Szymanowicz, Jiapeng Tang, Hadi Alzayer, Dana Roth, and Angjoo Kanazawa for their
+                        valuable contributions.
+                        We also extend our gratitude to Shlomi Fruchter, Kevin Murphy, Mohammad Babaeizadeh, Han Zhang,
+                        and Amir Hertz for training the base text-to-image latent diffusion model.
+                        <br><br><br>
+                    </p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-5 center text-start">
+                        <label style="display: inline" for="bibtex">
+                            <h4 style="text-align: center">BibTeX </h4>
+                        </label>
+                        <textarea id="bibtex" class="form-control" readonly>
+@article{wu2024cat4d,
+    title={{CAT4D: Create Anything in 4D with Multi-View Video Diffusion Models}},
+    author={Wu, Rundi and Gao, Ruiqi and Poole, Ben and Trevithick, Alex and Zheng, Changxi and Barron, Jonathan T. and Holynski, Aleksander}
+    journal={arXiv:2411.18613},
+    year={2024}
+}
+                        </textarea>
+                    </div>
+                </div>
+
+
+                <div class="row justify-content-center">
+                    <div class="col-8">
+                        <video class="w-100 h-100" style="max-width:200px" src="videos/wizard_cat.mp4" muted loop
+                            autoplay playsinline>An animated illustrated cat paws at an
+                            image. It turns into a 3D cat head!</video>
+                    </div>
+                </div>
+
+
+        </main>
+        <footer>
+            <div class="row">
+                <div class="col-md-8 offset-md-2 text-start">
+
+                    <p class="text-justify" style="text-align: left;">
+                        <i>
+						4D interactive viewer powered by <a href="https://github.com/ArthurBrussee/brush">Brush</a>. Website modified from <a href="https://cat3d.github.io">CAT3D</a>.                         </i>
+                    </p>
+                </div>
+            </div>
+
+        </footer>
+    </div>
+</body>
+
+</html>
