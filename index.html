@@ -422,7 +422,7 @@
   window.addEventListener("TrunkApplicationStarted", (e) => {
       // Load with an initial URL.
       console.log("starting")
-      var start_url = `./static/avatar_gallery/abraham_lincoln.ply`
+      var start_url = `https://free4d.github.io/static/avatar_gallery/abraham_lincoln.ply`
       const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.2&min_radius=1.3&max_radius=2.0&radius=1.5&min_pitch=-15.0&max_pitch=15.0&min_yaw=-45.0&max_yaw=45.0`)
       window.viewer = viewer;
   });
@@ -477,13 +477,13 @@
       "vid": "static/avatar_gallery/abraham_lincoln.mp4",
       "poster": "static/avatar_gallery/abraham_lincoln_poster.webp",
       // URL (can be from another site)
-      "url": `./static/avatar_gallery/abraham_lincoln.ply`,
+      "url": `https://free4d.github.io/static/avatar_gallery/abraham_lincoln.ply`,
     },
     "michelle_obama": {
         "ref": "static/avatar_gallery/michelle_obama.webp",
         "vid": "static/avatar_gallery/michelle_obama.mp4",
         "poster": "static/avatar_gallery/michelle_obama_poster.webp",
-        "url": `./static/avatar_gallery/michelle_obama.ply`,
+        "url": `https://free4d.github.io/static/avatar_gallery/michelle_obama.ply`,
     },
   }
 
