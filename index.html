@@ -63,7 +63,6 @@
       window.addEventListener("TrunkApplicationStarted", (e) => {
           // Load with an initial URL.
           var start_url = "https://storage.googleapis.com/free4d/fox.ply"
-          // const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.5&min_radius=1&max_radius=10&radius=3&min_pitch=-15.0&max_pitch=15.0&min_yaw=-15.0&max_yaw=15.0`)
           const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.75&min_radius=1&max_radius=10&radius=5&min_pitch=-15.0&max_pitch=15.0&min_yaw=-15.0&max_yaw=15.0`)
           // setupCarousel(viewer, document.querySelector("#splat-carousel"));
           window.viewer = viewer;
@@ -479,7 +478,7 @@
             <p class="text-center" style="text-align: center;">
               Click on the thumbnails below to explore the generated 4D scenes in real-time in your browser, powered by <b><a href="https://github.com/ArthurBrussee/brush" class="custom-link">Brush</a></b>.
               <br>
-              Note that this feature is currently only supported by Chrome 131+.
+              Note that this feature is currently only supported by Chrome 130+.
             </p>
 
             <div id="webgpu-warning" style="display: none" class="warning">
@@ -1057,7 +1056,7 @@
   </div>
 
   <footer class="text-center" style="margin-bottom: 10px">
-    Thanks to <a href="https://zhenx.me/" target="_blank">Zhen Xu</a>, <a href="https://lioryariv.github.io/" target="_blank">Lior Yariv</a> for the website template, and <a href="https://cat-4d.github.io/" target="_blank">CAT4D</a> for the 4D interactive viewer.
+    Thanks to <a href="https://zhenx.me/" target="_blank">Zhen Xu</a> and <a href="https://lioryariv.github.io/" target="_blank">Lior Yariv</a> for the website template, and to <a href="https://cat-4d.github.io/" target="_blank">CAT4D</a> and <a href="https://github.com/ArthurBrussee/brush" target="_blank">Brush</a> for the 4D interactive viewer.
   </footer>
 
 <div class="container">
