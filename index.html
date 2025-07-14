@@ -34,7 +34,8 @@
         content="AnCVEgj/n1Wom/TQTyNlRdgaqJ7Jl6rABJAERKq1NA46LD//axzLbfaj1/g7oMoYhDH645hH9huq1C1qWx1uoQwAAAB0eyJvcmlnaW4iOiJodHRwczovL2ZyZWU0ZC5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6IldlYkdQVVN1Ymdyb3Vwc0ZlYXR1cmVzIiwiZXhwaXJ5IjoxNzQ0NzYxNTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=" />
     <link rel="icon" href="favicon.ico">
   <script type="module">
-    import init, * as bindings from '/brush-demo/brush-desktop-cfe413afb3e2c900.js';
+    // import init, * as bindings from '/brush-demo/brush-desktop-cfe413afb3e2c900.js';
+    import init, * as bindings from '/brush-demo/brush_app.js';
     const isWebGPUSupported = 'gpu' in navigator;
     const warningElement = document.getElementById('webgpu-warning');
     const canvasElement = document.getElementById('brush_canvas');
@@ -47,7 +48,7 @@
     };
 
     if (isWebGPUSupported) {
-        const wasm = await init({ module_or_path: '/brush-demo/brush-desktop-cfe413afb3e2c900_bg.wasm' });
+        const wasm = await init({ module_or_path: '/brush-demo/brush_app_bg.wasm' });
 
         window.wasmBindings = bindings;
         dispatchEvent(new CustomEvent("TrunkApplicationStarted", { detail: { wasm } }));
@@ -55,18 +56,20 @@
         warningElement.style.display = 'block';
         canvasElement.style.display = 'none';
     }
+
   </script>
 
   <script type="module">
       import { setupCarousel } from "./js/splats.js"
 
       window.addEventListener("TrunkApplicationStarted", (e) => {
-          // Load with an initial URL.
-          var start_url = "https://storage.googleapis.com/free4d/fox.ply"
-          const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.75&min_radius=1&max_radius=10&radius=5&min_pitch=-15.0&max_pitch=15.0&min_yaw=-15.0&max_yaw=15.0`)
-          // setupCarousel(viewer, document.querySelector("#splat-carousel"));
-          window.viewer = viewer;
-      });
+            // Load with an initial URL.
+            var start_url = "https://storage.googleapis.com/realtime-nerf-360/cat4d/kling-forest-elf-fire_deform3dgs_pruned.ply"
+            const app = new window.wasmBindings.EmbeddedApp("brush_canvas", `?zen=true`)
+            window.app = app;
+            // Loa
+            loadViewer(start_url);
+        });
   </script>
   <style>
     code {
@@ -506,92 +509,92 @@
             <div class="pill-row scene-pills" id="viewer-pills" role="group" aria-relevant="additions text">
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/fox.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/fox.ply")'>
                   <img class="thumbnail-img" src="assets\videos\prompt\fox.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/astronaut.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/astronaut.ply")'>
                   <img class="thumbnail-img" src="assets\videos\prompt\astronaut.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/bear_guitar.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/bear_guitar.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\bear_guitar.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/castle.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/castle.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\castle.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/monx.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/monx.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\monx.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/monster_bedroom.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/monster_bedroom.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\monster_bedroom.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/panda_guitar.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/panda_guitar.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\panda_guitar.png" alt=fn width="100">
                 </a>
               </span>
               <br>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/waterfall1.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/waterfall1.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\waterfall1.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/waterfall2.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/waterfall2.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\waterfall2.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/cat_sing.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/cat_sing.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\cat_sing.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/clothes.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/clothes.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\clothes.png" alt=fn width="100">
                 </a>
               </span>
               <!-- <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/fire.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/fire.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\fire.png" alt=fn width="100">
                 </a>
               </span> -->
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/firepit.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/firepit.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\firepit.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/monkey.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/monkey.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\monkey.png" alt=fn width="100">
                 </a>
               </span>
               <span class="pill scene-pill">
                 <a
-                  onclick='window.viewer.load_url("https://storage.googleapis.com/free4d/panda_read.ply")'>
+                  onclick='loadViewer("https://storage.googleapis.com/free4d/panda_read.ply")'>
                     <img class="thumbnail-img" src="assets\videos\prompt\panda_read.png" alt=fn width="100">
                 </a>
               </span>
