@@ -34,6 +34,7 @@
         content="AnCVEgj/n1Wom/TQTyNlRdgaqJ7Jl6rABJAERKq1NA46LD//axzLbfaj1/g7oMoYhDH645hH9huq1C1qWx1uoQwAAAB0eyJvcmlnaW4iOiJodHRwczovL2ZyZWU0ZC5naXRodWIuaW86NDQzIiwiZmVhdHVyZSI6IldlYkdQVVN1Ymdyb3Vwc0ZlYXR1cmVzIiwiZXhwaXJ5IjoxNzQ0NzYxNTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=" />
     <link rel="icon" href="favicon.ico">
   <script type="module">
+    // import init, * as bindings from '/brush-demo/brush-desktop-cfe413afb3e2c900.js';
     import init, * as bindings from '/brush-demo/brush_app.js';
     const isWebGPUSupported = 'gpu' in navigator;
     const warningElement = document.getElementById('webgpu-warning');
@@ -47,8 +48,8 @@
     };
 
     if (isWebGPUSupported) {
+        // const wasm = await init({ module_or_path: '/brush-demo/brush-desktop-cfe413afb3e2c900_bg.wasm' });
         const wasm = await init({ module_or_path: '/brush-demo/brush_app_bg.wasm' });
-
         window.wasmBindings = bindings;
         dispatchEvent(new CustomEvent("TrunkApplicationStarted", { detail: { wasm } }));
     } else {
@@ -60,22 +61,19 @@
   <script type="module">
       import { setupCarousel } from "./js/splats.js"
 
-      // window.addEventListener("TrunkApplicationStarted", (e) => {
-      //     // Load with an initial URL.
-      //     var start_url = "https://storage.googleapis.com/free4d/fox.ply"
-      //     const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.75&min_radius=1&max_radius=10&radius=5&min_pitch=-15.0&max_pitch=15.0&min_yaw=-15.0&max_yaw=15.0`)
-      //     // setupCarousel(viewer, document.querySelector("#splat-carousel"));
-      //     window.viewer = viewer;
-      // });
       window.addEventListener("TrunkApplicationStarted", (e) => {
-            // Load with an initial URL.
-            var start_url = "https://storage.googleapis.com/free4d/fox.ply"
-            const app = new window.wasmBindings.EmbeddedApp("brush_canvas", `?zen=true`)
-            window.app = app;
-            // Loa
-            loadViewer(start_url);
-        });
+          // Load with an initial URL.
+          var start_url = "https://storage.googleapis.com/free4d/fox.ply"
+          // const viewer = new window.wasmBindings.EmbeddedViewer("brush_canvas", `?url=${start_url}&zen=true&focal=0.75&min_radius=1&max_radius=10&radius=5&min_pitch=-15.0&max_pitch=15.0&min_yaw=-15.0&max_yaw=15.0`)
+          // setupCarousel(viewer, document.querySelector("#splat-carousel"));
+          // window.viewer = viewer;
+          const app = new window.wasmBindings.EmbeddedApp("brush_canvas", `?zen=true`)
+          window.app = app;
+          // Loa
+          loadViewer(start_url);
+      });
   </script>
+
   <style>
     code {
       white-space: pre-wrap;
@@ -397,6 +395,65 @@
     </div>
   </section>
   <br><br>
+
+  <section class="results-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h1>Demo</h1>
+          <hr style="margin-top: 0px" />
+          <script>
+              activeMethodPill = "free4d"
+              activeScenePill = document.querySelector('.scene-pill.active-pill');
+              activeModePill = document.querySelector('.mode-pill.active-pill');
+          </script>
+          
+          <div class="text-center">
+              <div class="video-container">
+                  <video class="video" style="width: 98%; max-width:1200px" id="compVideo_l1" loop playsinline autoplay muted>
+                      <source src="assets/videos/ours/large_motion/monster_hits_daruma.mp4" />
+                  </video>
+              </div>
+
+              <script>
+                  video_l = document.getElementById("compVideo_l1");
+              </script>
+
+              <div class="pill-row scene-pills" id="scene-pills">
+                  <span class="pill scene-pill" data-value="monster_hits_daruma"  onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\monster_hits_daruma.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="boy_with_icecream" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\boy_with_icecream.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="car_in_mountain" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\car_in_mountain.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="car_on_road" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\car_on_road.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="dog_playing_soccer" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\dog_playing_soccer.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="doll_deflating_on_floor" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\doll_deflating_on_floor.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="rabbit_with_balloons" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\rabbit_with_balloons.png" alt=fn width="100">
+                  </span>
+                  <span class="pill scene-pill active" data-value="ship_in_lake" onclick="selectvideos_large(activeMethodPill, this, video_l)">
+                    <img class="thumbnail-img" src="assets\videos\prompt\ship_in_lake.png" alt=fn width="100">
+                  </span>
+              </div>
+
+              <script>
+                  activeMethodPill = document.querySelector('.method-pill.active-pill');
+                  activeScenePill = document.querySelector('.scene-pill.active-pill');
+                  activeModePill = document.querySelector('.mode-pill.active-pill');
+              </script>
+          </div>
+  </section>
+  
 
   <section>
     <div class="container">
