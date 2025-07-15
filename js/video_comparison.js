@@ -1,245 +1,183 @@
 // Written by Dor Verbin, October 2021
 // This is based on: http://thenewcode.com/364/Interactive-Before-and-After-Video-Comparison-in-HTML5-Canvas
 // With additional modifications based on: https://jsfiddle.net/7sk5k4gp/13/
+// Modified by Keunhong Park to be responsive to window size.
 
-function playVids(id) {
-    if (id.endsWith('After')) {
-        id = id.slice(0, -5); // 'After' has 5 characters
-    }
-    var leftVideo = document.getElementById(id);
-    var rightVideo = document.getElementById(id + 'After');
-    var videoMerge = document.getElementById(id + 'Merge');
-    var videoContainer = document.getElementById(id + 'Div');
-    var videoSpinner = document.getElementById(id + 'Spinner');
-    var mergeContext = videoMerge.getContext('2d');
-
-    if (
-        leftVideo.readyState > HTMLMediaElement.HAVE_CURRENT_DATA &&
-        rightVideo.readyState > HTMLMediaElement.HAVE_CURRENT_DATA
-    ) {
-        videoSpinner.style.display = 'none';
-        // videoSpinner.style.border = 'none';
-        // videoSpinner.style.height = '0px';
-
-        var position = 0.5;
-        var vertical = 0.5;
-
-        var vidWidth = videoMerge.width;
-        var vidHeight = videoMerge.height;
-        var ratio = leftVideo.videoWidth / vidWidth;
-
-        // leftVideo.removeEventListener('play');
-        // rightVideo.removeEventListener('play');
-
-        leftVideo.pause();
-        leftVideo.currentTime = 0;
-        leftVideo.play();
-
-        rightVideo.pause();
-        rightVideo.currentTime = 0;
-        rightVideo.play();
-
-        function trackLocation(e) {
-            // Normalize to [0, 1]
-            bcr = videoMerge.getBoundingClientRect();
-            position = (e.clientX - bcr.x) / bcr.width;
-            vertical = (e.clientY - bcr.y) / bcr.height;
-        }
-        function trackLocationTouch(e) {
-            // Normalize to [0, 1]
-            bcr = videoMerge.getBoundingClientRect();
-            position = (e.touches[0].clientX - bcr.x) / bcr.width;
-            vertical = (e.touches[0].clientY - bcr.y) / bcr.height;
-        }
-
-        videoMerge.addEventListener('mousemove', trackLocation, false);
-        videoMerge.addEventListener('touchstart', trackLocationTouch, false);
-        videoMerge.addEventListener('touchmove', trackLocationTouch, false);
-
-        function drawLoop() {
-            mergeContext.drawImage(
-                leftVideo,
-                0,
-                0,
-                vidWidth * ratio,
-                vidHeight * ratio,
-                0,
-                0,
-                vidWidth,
-                vidHeight
-            );
-            var colStart = (vidWidth * position).clamp(0.0, vidWidth);
-            var colWidth = (vidWidth - vidWidth * position).clamp(
-                0.0,
-                vidWidth
-            );
-            mergeContext.drawImage(
-                rightVideo,
-                colStart * ratio,
-                0,
-                colWidth * ratio,
-                vidHeight * ratio,
-                colStart,
-                0,
-                colWidth,
-                vidHeight
-            );
-            // videoMerge.setAttribute(
-            //     'animation_id',
-            //     requestAnimationFrame(drawLoop)
-            // );
-            requestAnimationFrame(drawLoop);
-            // videoMerge.setAttribute('darwLoop', drawLoop);
-
-            var arrowLength = 0.09 * vidHeight;
-            var arrowheadWidth = 0.025 * vidHeight;
-            var arrowheadLength = 0.04 * vidHeight;
-            var arrowPosY = 0.075 * vidHeight;
-            var arrowWidth = 0.007 * vidHeight;
-            var currX = vidWidth * position;
-
-            // Draw circle
-            mergeContext.arc(
-                currX,
-                arrowPosY,
-                arrowLength * 0.7,
-                0,
-                Math.PI * 2,
-                false
-            );
-            mergeContext.fillStyle = '#FFD79340';
-            mergeContext.fill();
-            // mergeContext.strokeStyle = "#444444";
-            // mergeContext.stroke()
-
-            // Draw border
-            mergeContext.beginPath();
-            mergeContext.moveTo(vidWidth * position, 0);
-            mergeContext.lineTo(vidWidth * position, vidHeight);
-            mergeContext.closePath();
-            mergeContext.strokeStyle = '#AAAAAA';
-            mergeContext.lineWidth = 5;
-            mergeContext.stroke();
-
-            // 添加以下代码来绘制文本
-
-            // 保存当前上下文状态
-            mergeContext.save();
-
-            // 设置字体样式
-            var textHeight = 20;
-            mergeContext.font = '800 ' + textHeight + "px 'Jost'"; // 更换字体进行测试
-            mergeContext.fillStyle = '#000000'; // 使用黑色
-
-            // 设定开始的高度
-            var startY = arrowPosY;
-
-            // 在左侧绘制 "4K4D" 文本
-            var text4K4D = '4K4D';
-            var text4K4DWidth = mergeContext.measureText(text4K4D).width;
-            mergeContext.fillText(
-                text4K4D,
-                vidWidth * position - text4K4DWidth - 50,
-                startY + (textHeight / 5) * 2
-            );
-
-            // 在右侧绘制 "ENeRF" 文本
-            var textENeRF = id;
-            mergeContext.fillText(
-                textENeRF,
-                vidWidth * position + 50,
-                startY + (textHeight / 5) * 2
-            );
-
-            // 恢复上下文状态
-            mergeContext.restore();
-
-            // Draw arrow
-            mergeContext.beginPath();
-            mergeContext.moveTo(currX, arrowPosY - arrowWidth / 2);
-
-            // Move right until meeting arrow head
-            mergeContext.lineTo(
-                currX + arrowLength / 2 - arrowheadLength / 2,
-                arrowPosY - arrowWidth / 2
-            );
-
-            // Draw right arrow head
-            mergeContext.lineTo(
-                currX + arrowLength / 2 - arrowheadLength / 2,
-                arrowPosY - arrowheadWidth / 2
-            );
-            mergeContext.lineTo(currX + arrowLength / 2, arrowPosY);
-            mergeContext.lineTo(
-                currX + arrowLength / 2 - arrowheadLength / 2,
-                arrowPosY + arrowheadWidth / 2
-            );
-            mergeContext.lineTo(
-                currX + arrowLength / 2 - arrowheadLength / 2,
-                arrowPosY + arrowWidth / 2
-            );
-
-            // Go back to the left until meeting left arrow head
-            mergeContext.lineTo(
-                currX - arrowLength / 2 + arrowheadLength / 2,
-                arrowPosY + arrowWidth / 2
-            );
-
-            // Draw left arrow head
-            mergeContext.lineTo(
-                currX - arrowLength / 2 + arrowheadLength / 2,
-                arrowPosY + arrowheadWidth / 2
-            );
-            mergeContext.lineTo(currX - arrowLength / 2, arrowPosY);
-            mergeContext.lineTo(
-                currX - arrowLength / 2 + arrowheadLength / 2,
-                arrowPosY - arrowheadWidth / 2
-            );
-            mergeContext.lineTo(
-                currX - arrowLength / 2 + arrowheadLength / 2,
-                arrowPosY
-            );
-
-            mergeContext.lineTo(
-                currX - arrowLength / 2 + arrowheadLength / 2,
-                arrowPosY - arrowWidth / 2
-            );
-            mergeContext.lineTo(currX, arrowPosY - arrowWidth / 2);
-
-            mergeContext.closePath();
-
-            mergeContext.fillStyle = '#AAAAAA';
-            mergeContext.fill();
-        }
-        // videoMerge.setAttribute(
-        //     'animation_id',
-        //     requestAnimationFrame(drawLoop)
-        // );
-        requestAnimationFrame(drawLoop);
-    }
-}
 
 Number.prototype.clamp = function (min, max) {
-    return Math.min(Math.max(this, min), max);
+  return Math.min(Math.max(this, min), max);
 };
 
-function resizeAndPlay(video) {
-    var id = video.id;
-    if (id.endsWith('After')) {
-        id = id.slice(0, -5); // 'After' has 5 characters
-    }
 
-    var leftVideo = document.getElementById(id);
-    var rightVideo = document.getElementById(id + 'After');
-    var videoMerge = document.getElementById(id + 'Merge');
+class VideoComparison {
+  constructor(container) {
+      this.container = container;
+      this.position = 0.5;
+      this.canvas = container.find('canvas');
+      this.video = container.find('video');
+      this.context = this.canvas[0].getContext("2d");
 
-    var vidWidth = $(video).parent().width();
-    var vidHeight = (video.videoHeight / video.videoWidth) * vidWidth;
+      this.isPlaying = false;
 
-    if (vidWidth > 0) {
-        videoMerge.width = vidWidth;
-        videoMerge.height = vidHeight;
-    }
+      this.video[0].style.height = "0px";  // Hide video without stopping it
+      this.video[0].playbackRate = 0.5;
 
-    playVids(video.id);
+      let self = this;
+      container.on('tab:show', function (e) {
+          self.playWhenReady();
+      });
+      container.on('tab:hide', function(e) {
+          // self.video[0].pause();
+          self.pause();
+      });
+
+      function trackLocation(e) {
+          // Normalize to [0, 1]
+          self.bcr = self.canvas[0].getBoundingClientRect();
+          self.position = ((e.pageX - self.bcr.x) / self.bcr.width);
+      }
+      function trackLocationTouch(e) {
+          // Normalize to [0, 1]
+          self.bcr = self.canvas[0].getBoundingClientRect();
+          self.position = ((e.touches[0].pageX - self.bcr.x) / self.bcr.width);
+      }
+
+      this.canvas.on('mousemove', trackLocation);
+      this.canvas.on('touchstart', trackLocationTouch);
+      this.canvas.on('touchmove', trackLocationTouch);
+      this.canvas.on('mouseout', function () { self.position = 0.5; });
+
+      $(window).on('resize', function (e) {
+          self.resize();
+      });
+  }
+
+  resize() {
+      const videoWidth = this.video[0].videoWidth / 2;
+      const videoHeight = this.video[0].videoHeight;
+      const canvasWidth = this.container.width();
+      const canvasHeight = canvasWidth * videoHeight / videoWidth;
+      this.canvas[0].width = canvasWidth;
+      this.canvas[0].height = canvasHeight;
+  }
+
+  play() {
+      this.resize();
+      if (this.isPlaying) {
+          return;
+      }
+      console.log('Playing video', this.video[0])
+      this.isPlaying = true;
+      this.video[0].play();
+      this.drawLoop();
+  }
+
+  pause() {
+      this.video[0].pause();
+      this.isPlaying = false;
+  }
+
+  playWhenReady() {
+      console.log('play when ready', this.video[0])
+      const self = this;
+      if (self.video[0].readyState >= 3) {
+          self.play();
+      } else if (!self.readyStateListenerAttached) {
+          document.addEventListener('readystatechange', function () {
+              if (self.video[0].readyState >= 3) {
+                  self.play();
+              }
+          });
+      }
+  }
+
+  drawLoop() {
+      const self = this;
+      const video = this.video[0];
+      const container = this.container;
+      const context = this.context;
+      requestAnimationFrame(drawFrame);
+
+      function drawFrame() {
+          const videoWidth = video.videoWidth / 2;
+          const videoHeight = video.videoHeight;
+          const canvasWidth = container.width();
+          const canvasHeight = canvasWidth * videoHeight / videoWidth;
+          const position = self.position;
+
+          context.drawImage(video, 0, 0, videoWidth, videoHeight, 0, 0, canvasWidth, canvasHeight);
+          var colStart = (canvasWidth * position).clamp(0.0, canvasWidth);
+          var colWidth = (canvasWidth - (canvasWidth * position)).clamp(0.0, canvasWidth);
+          var sourceColStart = (videoWidth * position).clamp(0.0, videoWidth);
+          var sourceColWidth = (videoWidth - (videoWidth * position)).clamp(0.0, videoWidth);
+          context.drawImage(
+              video,
+              sourceColStart + videoWidth, 0,
+              sourceColWidth, videoHeight,
+              colStart, 0,
+              colWidth, canvasHeight);
+
+          var arrowLength = 0.09 * canvasHeight;
+          var arrowheadWidth = 0.025 * canvasHeight;
+          var arrowheadLength = 0.04 * canvasHeight;
+          var arrowPosY = canvasHeight / 10;
+          var arrowWidth = 0.007 * canvasHeight;
+          var currX = canvasWidth * position;
+
+          // Draw circle
+          context.arc(currX, arrowPosY, arrowLength * 0.7, 0, Math.PI * 2, false);
+          context.fillStyle = "#FFD79340";
+          context.fill()
+
+          // Draw border
+          context.beginPath();
+          context.moveTo(canvasWidth * position, 0);
+          context.lineTo(canvasWidth * position, canvasHeight);
+          context.closePath()
+          context.strokeStyle = "#AAAAAA";
+          context.lineWidth = 5;
+          context.stroke();
+
+          // Draw arrow
+          context.beginPath();
+          context.moveTo(currX, arrowPosY - arrowWidth / 2);
+
+          // Move right until meeting arrow head
+          context.lineTo(currX + arrowLength / 2 - arrowheadLength / 2, arrowPosY - arrowWidth / 2);
+
+          // Draw right arrow head
+          context.lineTo(currX + arrowLength / 2 - arrowheadLength / 2, arrowPosY - arrowheadWidth / 2);
+          context.lineTo(currX + arrowLength / 2, arrowPosY);
+          context.lineTo(currX + arrowLength / 2 - arrowheadLength / 2, arrowPosY + arrowheadWidth / 2);
+          context.lineTo(currX + arrowLength / 2 - arrowheadLength / 2, arrowPosY + arrowWidth / 2);
+
+          // Go back to the left until meeting left arrow head
+          context.lineTo(currX - arrowLength / 2 + arrowheadLength / 2, arrowPosY + arrowWidth / 2);
+
+          // Draw left arrow head
+          context.lineTo(currX - arrowLength / 2 + arrowheadLength / 2, arrowPosY + arrowheadWidth / 2);
+          context.lineTo(currX - arrowLength / 2, arrowPosY);
+          context.lineTo(currX - arrowLength / 2 + arrowheadLength / 2, arrowPosY - arrowheadWidth / 2);
+          context.lineTo(currX - arrowLength / 2 + arrowheadLength / 2, arrowPosY);
+
+          context.lineTo(currX - arrowLength / 2 + arrowheadLength / 2, arrowPosY - arrowWidth / 2);
+          context.lineTo(currX, arrowPosY - arrowWidth / 2);
+
+          context.closePath();
+
+          context.fillStyle = "#AAAAAA";
+          context.fill();
+
+          context.font = "20px 'Google Sans', sans-serif";
+          context.fillStyle = "white";
+          context.strokeStyle = 'black';
+          context.lineWidth = 2;
+          context.textAlign = "left";
+          context.textBaseline = "bottom";
+
+          if (self.isPlaying) {
+              requestAnimationFrame(drawFrame);
+          }
+      }
+  }
 }
